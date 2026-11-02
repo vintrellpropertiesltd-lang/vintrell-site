@@ -655,6 +655,12 @@ async function boot(){
     goLogin(); loginMsg(/expired|invalid/i.test(p.get("error_description")||"")?"That sign-in link has expired. Type your email and we’ll send a new one.":"That link didn’t work. Type your email and we’ll send a new one.",true);
     return;
   }
+  const qs=new URLSearchParams(location.search);
+  if(qs.get("token_hash")){
+    const {error:vErr}=await sb.auth.verifyOtp({token_hash:qs.get("token_hash"),type:qs.get("type")||"magiclink"});
+    history.replaceState(null,"",location.pathname);
+    if(vErr){ goLogin(); loginMsg(/expired|invalid/i.test(vErr.message||"")?"That sign-in link has expired. Type your email and we’ll send a new one.":"That link didn’t work. Type your email and we’ll send a new one.",true); return; }
+  }
   const {data:{session}}=await sb.auth.getSession();
   if(!session){ if(hash==="#login") goLogin(); return; }
   if(/access_token|type=/.test(hash)) history.replaceState(null,"",location.pathname);
