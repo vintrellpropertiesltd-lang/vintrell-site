@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vintrell</title>
+<title>Property Sourcing Wirral &amp; Liverpool | HMOs &amp; Below-Market Deals | Vintrell</title>
+<meta name="description" content="Off-market HMOs, blocks and below-market houses across the Wirral and Liverpool, appraised with sold comps and costed works, packaged for investors.">
+<link rel="canonical" href="https://vintrell.co.uk/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vintrell Properties">
+<meta property="og:title" content="Property Sourcing Wirral &amp; Liverpool | Vintrell Properties">
+<meta property="og:description" content="Off-market HMOs, blocks and below-market houses across the Wirral and Liverpool, packaged for investors.">
+<meta property="og:url" content="https://vintrell.co.uk/">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  "name": "Vintrell Properties Ltd",
+  "url": "https://vintrell.co.uk/",
+  "email": "vintrellpropertiesltd@gmail.com",
+  "areaServed": ["Wirral", "Birkenhead", "Wallasey", "Liverpool", "Chester", "Merseyside"],
+  "sameAs": ["https://www.instagram.com/vintrellproperties/"]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -65,7 +86,7 @@ nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(-
 /* Public page behind the login */
 .public{max-width:1240px;margin:0 auto;padding:120px 24px 140px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:64px;align-items:center}
 .public .num{font-family:var(--head);font-size:120px;line-height:.8;color:var(--gold);font-weight:300}
-.public h1{font-size:clamp(40px,4.6vw,62px);margin:22px 0}
+.public h1,.public .ptitle{font-size:clamp(40px,4.6vw,62px);margin:22px 0}
 .public p.lead{color:var(--muted);max-width:30em;margin:0}
 .login-card{background:var(--surface);border:1px solid var(--gold-line);padding:40px}
 .login-card h2{font-size:34px}
@@ -255,7 +276,7 @@ footer.site-foot{border-top:1px solid var(--gold-line);padding:32px 24px;text-al
 <section id="story" style="max-width: 1240px; margin: 0 auto; padding: 136px 24px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 64px">
 <div style="display: flex; flex-direction: column; gap: 20px">
 <p style="margin: 0; font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: #C9A45C">Our story</p>
-<h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px, 4.6vw, 62px); line-height: 1.05">We learned property from the people who own it.</h2>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px, 4.6vw, 62px); line-height: 1.05">We learned property from the people who own it.</h1>
 <p style="margin: 0; color: #A9A193; max-width: 28em">Vintrell began in marketing. Working side by side with established landlords showed us how property really works — and where the real opportunity lies. We've been building on that ever since.</p>
 </div>
 <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
@@ -462,7 +483,7 @@ footer.site-foot{border-top:1px solid var(--gold-line);padding:32px 24px;text-al
     <div>
       <span class="num">01</span>
       <p class="eyebrow" style="margin-top:22px">Vintrell Property</p>
-      <h1>Your properties, wherever you are.</h1>
+      <h2 class="ptitle">Your properties, wherever you are.</h2>
       <p class="lead">Verified investors can sign in to see the deals we’re bringing them and follow every project we manage, with updates from site as they happen.</p>
     </div>
     <form class="login-card" id="loginForm" novalidate>
@@ -480,7 +501,8 @@ footer.site-foot{border-top:1px solid var(--gold-line);padding:32px 24px;text-al
   </div>
 </div>
 
-<!-- APP -->
+<!-- APP: only added to the page after sign-in, so it is not public page text -->
+<template id="appTpl">
 <div id="appScreen" class="hidden">
   <main class="wrap">
     <div class="greet"><p class="eyebrow">Investor portal</p><h1 id="greetTitle"></h1><p id="greetText"></p></div>
@@ -603,6 +625,7 @@ footer.site-foot{border-top:1px solid var(--gold-line);padding:32px 24px;text-al
     </section>
   </main>
 </div>
+</template>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const SB_URL = "https://uymcxolwugscmzcggwns.supabase.co";
@@ -690,6 +713,7 @@ async function loadAll(){
 }
 
 function signIn(){
+  mountApp();
   const me=state.me, admin=me.role==="admin";
   $("homeScreen").classList.add("hidden"); $("loginScreen").classList.add("hidden"); $("appScreen").classList.remove("hidden");
   $("portalNav").classList.remove("hidden"); $("loginBtn").classList.add("hidden");
@@ -861,7 +885,7 @@ document.addEventListener("click",async e=>{
   }
 });
 
-function goHome(){["loginScreen","appScreen","portalNav"].forEach(id=>$(id).classList.add("hidden"));$("homeScreen").classList.remove("hidden");$("loginBtn").classList.remove("hidden");}
+function goHome(){["loginScreen","appScreen","portalNav"].forEach(id=>$(id)?.classList.add("hidden"));$("homeScreen").classList.remove("hidden");$("loginBtn").classList.remove("hidden");}
 function goLogin(){$("homeScreen").classList.add("hidden");$("loginScreen").classList.remove("hidden");window.scrollTo(0,0);$("email").focus({preventScroll:true});}
 document.querySelector("header.site").addEventListener("click",e=>{
   const a=e.target.closest("a[href^='#']"); if(!a) return;
@@ -894,6 +918,13 @@ $("loginForm").addEventListener("submit",async e=>{
   else loginMsg(`Done. Check your email (${email}) and tap the sign-in link. It can take a minute, and may land in junk.`);
 });
 
+function mountApp(){
+  if($("appScreen")) return;
+  const t=$("appTpl"); if(!t) return;
+  t.replaceWith(t.content.cloneNode(true));
+  bindApp();
+}
+function bindApp(){
 $("uProject").addEventListener("change",fillStages);
 $("updateForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -949,6 +980,7 @@ $("projectForm").addEventListener("submit",async e=>{
   if(error){console.error(error);toast("Couldn’t create that project");return;}
   e.target.reset(); await loadAll(); renderAll(); toast("Project created");
 });
+}
 
 boot();
 
